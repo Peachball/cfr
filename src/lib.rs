@@ -3,17 +3,26 @@ use std::{collections::HashMap, hash::Hash, iter};
 pub mod external_sampling;
 pub mod outcome_sampling;
 
-/// All invalid calls panic on failure
+/// Represents a general imperfect information game
+///
+/// Players are represented as usize indicies
 pub trait ImperfectInfoGame {
   type Infoset: Hash + Eq + Clone;
   type Action: Hash + Eq + Clone;
 
+  /// Create a new game randomly
+  ///
+  /// Primarily used for external sampling
   fn reset(&mut self);
+
   fn current_infoset(&self) -> Self::Infoset;
   fn actions(&self) -> Vec<Self::Action>;
   fn make_move(&mut self, action: Self::Action);
   fn undo_move(&mut self);
   fn is_game_over(&self) -> bool;
+
+  /// Returns points for each player, where the points for player i corresponds
+  /// to the value in the ith entry of the array
   fn utility(&self) -> Vec<f64>;
   fn turn(&self) -> usize;
   fn num_players(&self) -> usize;
